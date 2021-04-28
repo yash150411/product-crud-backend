@@ -1,0 +1,24 @@
+{
+  "name": "product-crud-backend",
+  "version": "1.0.0",
+  "description": "Crud application backend built on mongodb, express & node ",
+  "main": "app.js",
+  "scripts": {
+    "start:dev": "NODE_ENV=dev nodemon app.js",
+    "start:test": "NODE_ENV=test node app.js",
+    "start:prod": "NODE_ENV=prod node app.js"
+  },
+  "author": "Yash Dave",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.6",
+    "tracer": "^1.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
