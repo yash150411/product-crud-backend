@@ -34,21 +34,29 @@ class ProductCtrl  {
   }
 
   async getAllProducts (req,res){
+    console.log('received a request');
     try{
-      let { pageNo, limit, sortType, sort } = req.query;
-      if(!pageNo) pageNo = 1;
-      if(!limit) limit = 15;
-      if(!sortType) sortType = 'createdAt';
+      let { pageNo, sortField, sort } = req.query;
+      console.log(pageNo);
+      if(!pageNo) pageNo = 0;
+      if(!sortField) sortField = 'createdAt';
       if(!sort) sort = -1;
-      const size = 15;
-      const skip = size * (pageNo - 1);
+      const limit = 10;
+      let skip = limit * pageNo;
+      console.log(`This is the skip value ${skip}`);
       const products = await Product.aggregate([
-        {$sort: {[sortType]: Number(sort)}},
-        {$skip: skip},
-        {$limit: Number(limit)},
+        {$sort: {[sortField]: Number(sort)}},
+        {$facet: {
+          results: [{ $skip: skip }, { $limit: Number(limit) }],
+          totalCount: [
+            {$count: 'count'}
+          ]
+        }
+      }
       ]);
-      res.status(200).json(products);
+      res.status(200).json({products: products[0].results, totalCount: products[0].totalCount[0].count});
     }catch(e){
+      console.log(e);
       res.status(400).json({message: 'Invalid Search Query'});
     }
   }

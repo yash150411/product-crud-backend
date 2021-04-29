@@ -5,6 +5,7 @@ const logger = require('tracer').colorConsole();
 const cors = require('cors');
 const { setMongo } = require('./mongo');
 const { setRoutes } = require('./routes');
+const fileUpload = require('express-fileupload');
 dotenv.config();
 
 const allowedOrigins = ['http://localhost:3000'];
@@ -21,6 +22,7 @@ app.use(cors({
 app.set('port', (process.env.PORT || 3028));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(fileUpload());
 
 async function main() {
   try {
