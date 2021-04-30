@@ -8,7 +8,7 @@ const { setRoutes } = require('./routes');
 const fileUpload = require('express-fileupload');
 dotenv.config();
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'https://product-crud-frontend.vercel.app/dashboard'];
 app.use(cors({
   origin: function(origin, callback){
     if(!origin) return callback(null, true);
