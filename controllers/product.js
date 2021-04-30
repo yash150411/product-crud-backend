@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const logger = require('tracer').colorConsole();
 
 class ProductCtrl  {
 
@@ -9,16 +10,21 @@ class ProductCtrl  {
       const id = newProduct._id;
       res.status(201).json({id, status: true, message: 'Product Added' });
     }catch(e){
+      logger.log(e);
       res.status(400).json({status:false, error: e.message, e});
     }
   }
 
   async editProduct (req, res){
     try{
+      console.log(req.body);   
+      let data = req.body;
+      delete data['productImage'];
       const filter = {_id: req.body._id};
-      const obj = await Product.findOneAndUpdate(filter, req.body);
+      const obj = await Product.findOneAndUpdate(filter, data);
       res.send({status:true, obj});
     }catch(e){
+      logger.log(e);
       res.status(400).json({message:e.message})
     }
   }
@@ -29,6 +35,7 @@ class ProductCtrl  {
       const obj = await Product.findOneAndUpdate(filter, {isDeleted: 1});
       res.send({status:true, obj});
     }catch(e){
+      logger.log(e);
       res.status(400).json({message:'Invalid Product ID'})
     }
   }
@@ -42,6 +49,7 @@ class ProductCtrl  {
       const limit = 10;
       let skip = limit * pageNo;
       const products = await Product.aggregate([
+        {$match: {isDeleted: 0}},
         {$sort: {[sortField]: Number(sort)}},
         {$facet: {
           results: [{ $skip: skip }, { $limit: Number(limit) }],
@@ -53,13 +61,15 @@ class ProductCtrl  {
       ]);
       res.status(200).json({products: products[0].results, totalCount: products[0].totalCount[0].count});
     }catch(e){
+      logger.log(e);
       res.status(400).json({message: 'Invalid Search Query'});
     }
   }
 
   // To be removed later
   async saveManyProducts (req,res){
-    for(let i = 1; i <= 25; i++){
+    for(let i = 1; i <= 100; i++){
+      console.log(i);
       let p = {
         productName: `product ${i}`,
         description: `description ${i}`,
