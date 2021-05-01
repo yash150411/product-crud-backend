@@ -59,7 +59,11 @@ class ProductCtrl  {
         }
       }
       ]);
-      res.status(200).json({products: products[0].results, totalCount: products[0].totalCount[0].count});
+      if(products[0].totalCount.length === 0){
+        res.status(200).json({products: products[0].results, totalCount: 0});
+      }else{
+        res.status(200).json({products: products[0].results, totalCount: products[0].totalCount[0].count});
+      }
     }catch(e){
       logger.log(e);
       res.status(400).json({message: 'Invalid Search Query'});
